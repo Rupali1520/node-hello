@@ -48,6 +48,11 @@ java index'''
         
           
   }
+        post{
+                always{
+                        mail to : "rupali.gupta@knoldus.com", subject:"buld success", body:"success"
+                }
+        }
         
         
           }
