@@ -1,4 +1,4 @@
-https://github.com/Rupali1520/node-hello.git
+
 pipeline{
         
         
@@ -19,7 +19,7 @@ pipeline{
         
         
           
-      git branch: 'devlopment', url: 'https://github.com/Rupali1520/node-hello.git'
+      git branch: 'testing', url: 'https://github.com/Rupali1520/node-hello.git'
         
         
           
