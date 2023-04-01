@@ -19,7 +19,7 @@ pipeline{
         
         
           
-      git branch: 'devlopment', url: 'https://github.com/Rupali1520/node-hello.git'
+      git branch: 'deployment', url: 'https://github.com/Rupali1520/node-hello.git'
         
         
           
@@ -35,8 +35,8 @@ pipeline{
         
         
           
-     sh '''npm pack 
-npm start'''
+     sh '''javac index.java
+     java index'''
         
         
           
