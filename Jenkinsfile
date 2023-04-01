@@ -1,4 +1,4 @@
-https://github.com/Rupali1520/node-hello.git
+
 pipeline{
         
         
@@ -35,11 +35,8 @@ pipeline{
         
         
           
-     sh '''javac index.java
-        
-        
-          
-java index'''
+     sh '''npm pack 
+npm start'''
         
         
           
