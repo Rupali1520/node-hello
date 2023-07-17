@@ -1,0 +1,39 @@
+
+trigger:
+- none
+
+stages:
+- stage: build
+  displayName: building stage
+  pool: 
+   vmImage: ubuntu-latest
+  
+  jobs:
+  - deployment: deploymentJob
+    displayName: Deploy to VM
+    environment: vm.vm1-demo
+   
+    strategy:
+      runOnce:
+          deploy:   
+            steps:
+                - checkout: self
+                - task: DownloadBuildArtifacts@1
+                  inputs:
+                    buildType: 'specific'
+                    project: '25fd97b3-0e67-4e99-be8d-ba6285589350'
+                    pipeline: '3'
+                    specificBuildWithTriggering: true
+                    buildVersionToDownload: 'latest'
+                    allowPartiallySucceededBuilds: true
+                    downloadType: 'single'
+                    artifactName: 'drop'
+                    downloadPath: '$(System.ArtifactsDirectory)'
+                - task: NodeTool@0
+                  inputs:
+                    versionSource: 'spec'
+                    versionSpec: '10.19.0'
+                    checkLatest: true
+                - script: |
+                    npm pack 
+                    npm start
