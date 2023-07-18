@@ -29,30 +29,6 @@ stages:
                     command: 'download'
                     downloadDirectory: '$(System.DefaultWorkingDirectory)'
                     feedsToUse: 'internal'
-                    vstsFeed: 'e04d6ea5-70c3-48d9-8aab-24717f6fb3f9/52c3fd2f-74d3-439b-b77e-832cde4114b2'
+                    vstsFeed: '25fd97b3-0e67-4e99-be8d-ba6285589350/efceda07-3b0f-4f54-afed-1af0255edc55'
                     vstsFeedPackage: 'node-hello'
-                    vstsPackageVersion: 'latest'
-                # - script: |
-                #     cd $(System.DefaultWorkingDirectory)/artifact # Navigate to the downloaded artifact directory
-                #     npm install # Install dependencies
-                #     node index.js # Run your Node.js project
-                #   displayName: "Run Node.js Project"
-
-                # - task: DownloadBuildArtifacts@1
-                #   inputs:
-                #     buildType: 'specific'
-                #     project: 'e04d6ea5-70c3-48d9-8aab-24717f6fb3f9'
-                #     pipeline: '1'
-                #     buildVersionToDownload: 'latest'
-                #     allowPartiallySucceededBuilds: true
-                #     downloadType: 'single'
-                #     artifactName: 'drop'
-                #     downloadPath: '$(System.ArtifactsDirectory)'
-                # - task: NodeTool@0
-                #   inputs:
-                #     versionSource: 'spec'
-                #     versionSpec: '10.19.0'
-                #     checkLatest: true
-                - script: |
-                    npm start
-                    
+                    vstsPackageVersion: '1.*'
