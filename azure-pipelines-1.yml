@@ -7,7 +7,7 @@ stages:
   displayName: building stage
   pool: 
    vmImage: ubuntu-latest
-  
+   
   jobs:
   - deployment: deploymentJob
     displayName: Deploy to VM
@@ -17,25 +17,42 @@ stages:
       runOnce:
           deploy:   
             steps:
-                - checkout: self
-                
-                - task: NodeTool@0
-                  inputs:
-                    versionSource: 'spec'
-                    versionSpec: '10.19.0'
-                    checkLatest: true
-                - task: DownloadBuildArtifacts@1
-                  inputs:
-                    buildType: 'specific'
-                    project: '25fd97b3-0e67-4e99-be8d-ba6285589350'
-                    pipeline: '3'
-                    specificBuildWithTriggering: true
-                    buildVersionToDownload: 'latest'
-                    downloadType: 'single'
-                    artifactName: 'drop'
-                    downloadPath: '$(System.ArtifactsDirectory)'
-                    checkDownloadedFiles: true
-                    extractTars: true
                 - script: |
-                   npm pack 
-                   npm start
+                    # Variables
+                    ORGANIZATION_URL="https://dev.azure.com/somya2000"  # Replace with your organization URL
+                    PROJECT_NAME="NEW-PROJECT"  # Replace with your project name
+                    FEED_NAME="trail-demo"  # Replace with your feed name
+                    PACKAGE_NAME="node-hello"  # Replace with your package name
+
+                    # Get the latest version from Azure Artifacts
+                    latest_version=$(curl -sS -u "$(echo :$(PAT) | base64)" -H "Content-Type: application/json" -H "Accept: application/json" "${ORGANIZATION_URL}/${PROJECT_NAME}/_apis/packaging/Feeds/${FEED_NAME}/npm/packages/${PACKAGE_NAME}/versions?api-version=6.0-preview.1" | jq -r '.value | sort_by(.normalizedVersion) | last | .normalizedVersion')
+
+                    # Print the latest version
+                    echo "Latest version: $latest_version"
+
+                    # Set the latest version as an environment variable for use in the subsequent deployment pipeline
+                    echo "##vso[task.setvariable variable=npmPackageVersion]$latest_version"
+
+
+                # - checkout: self
+                
+                # - task: NodeTool@0
+                #   inputs:
+                #     versionSource: 'spec'
+                #     versionSpec: '10.19.0'
+                #     checkLatest: true
+                # - task: DownloadBuildArtifacts@1
+                #   inputs:
+                #     buildType: 'specific'
+                #     project: '25fd97b3-0e67-4e99-be8d-ba6285589350'
+                #     pipeline: '3'
+                #     specificBuildWithTriggering: true
+                #     buildVersionToDownload: 'latest'
+                #     downloadType: 'single'
+                #     artifactName: 'drop'
+                #     downloadPath: '$(System.ArtifactsDirectory)'
+                #     checkDownloadedFiles: true
+                #     extractTars: true
+                # - script: |
+                #    npm pack 
+                #    npm start
