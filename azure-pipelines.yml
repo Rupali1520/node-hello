@@ -8,15 +8,16 @@ trigger:
 stages:
 - stage: build
   displayName: build stage
-  jobs:
-   - deployment: production
-     displayName: Production
-     pool: rupali
   variables:
     majorVersion: 1
     minorVersion: $[counter(variables['majorVersion'], 0)]
     patchVersion: $[counter(format('{0}.{1}', variables['majorVersion'], variables['minorVersion']), 0)]
     versionNumber: '$(majorVersion).$(minorVersion).$(patchVersion)'
+  jobs:
+   - deployment: production
+     displayName: Production
+     pool: rupali
+
   steps:
   - task: NodeTool@0
     displayName: 'install node'
