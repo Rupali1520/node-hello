@@ -28,6 +28,8 @@ stages:
                     downloadType: 'single'
                     artifactName: 'drop'
                     downloadPath: '$(System.ArtifactsDirectory)'
+                    checkDownloadedFiles: true
+                    extractTars: true
                 - task: NodeTool@0
                   inputs:
                     versionSource: 'spec'
@@ -36,3 +38,21 @@ stages:
                 - script: |
                     npm pack 
                     npm start
+
+                # - task: DownloadBuildArtifacts@1
+                #   inputs:
+                #     buildType: 'specific'
+                #     project: 'e04d6ea5-70c3-48d9-8aab-24717f6fb3f9'
+                #     pipeline: '1'
+                #     buildVersionToDownload: 'latest'
+                #     allowPartiallySucceededBuilds: true
+                #     downloadType: 'single'
+                #     artifactName: 'drop'
+                #     downloadPath: '$(System.ArtifactsDirectory)'
+                # - task: NodeTool@0
+                #   inputs:
+                #     versionSource: 'spec'
+                #     versionSpec: '10.19.0'
+                #     checkLatest: true
+                # - script: |
+                #     npm start
