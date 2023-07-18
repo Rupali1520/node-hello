@@ -24,16 +24,19 @@ stages:
                     versionSource: 'spec'
                     versionSpec: '10.19.0'
                     checkLatest: true
-                - task: Npm@1
+                - task: UniversalPackages@0
                   inputs:
-                    command: 'install'
-                    workingDir: './'
-                    verbose: true
-                    customRegistry: 'useFeed'
-                    customFeed: 'e04d6ea5-70c3-48d9-8aab-24717f6fb3f9/52c3fd2f-74d3-439b-b77e-832cde4114b2'
-                - script: |
-                    npm pack 
-                    npm start
+                    command: 'download'
+                    downloadDirectory: '$(System.DefaultWorkingDirectory)'
+                    feedsToUse: 'internal'
+                    vstsFeed: 'e04d6ea5-70c3-48d9-8aab-24717f6fb3f9/52c3fd2f-74d3-439b-b77e-832cde4114b2'
+                    vstsFeedPackage: 'node-hello'
+                    vstsPackageVersion: 'latest'
+                # - script: |
+                #     cd $(System.DefaultWorkingDirectory)/artifact # Navigate to the downloaded artifact directory
+                #     npm install # Install dependencies
+                #     node index.js # Run your Node.js project
+                #   displayName: "Run Node.js Project"
 
                 # - task: DownloadBuildArtifacts@1
                 #   inputs:
@@ -50,5 +53,6 @@ stages:
                 #     versionSource: 'spec'
                 #     versionSpec: '10.19.0'
                 #     checkLatest: true
-                # - script: |
-                #     npm start
+                - script: |
+                    npm start
+                    
