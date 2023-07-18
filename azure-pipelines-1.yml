@@ -39,5 +39,3 @@ stages:
                 - script: |
                    npm pack 
                    npm start
-- task: Bash@3
-  inputs:
