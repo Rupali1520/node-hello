@@ -5,88 +5,46 @@
 
 trigger:
 - none
-stages:
-- stage: build
-  displayName: build stage
-  variables:
-    majorVersion: 1
-    minorVersion: $[counter(variables['majorVersion'], 0)]
-    patchVersion: $[counter(format('{0}.{1}', variables['majorVersion'], variables['minorVersion']), 0)]
-    versionNumber: '$(majorVersion).$(minorVersion).$(patchVersion)'
-  pool: rupali
-  jobs:
-   - deployment: production
-     displayName: Production
-     strategy:
-      runOnce:
-          deploy:   
-            steps:
-   
- 
-              - task: NodeTool@0
-                displayName: 'install node'
-                inputs:
-                  versionSource: 'spec'
-                  versionSpec: '10.19.0'
-                  checkLatest: true
 
-              - task: Npm@1
-                displayName: 'install node'
-                inputs:
-                  command: 'install'
-                  verbose: true
-              - task: Bash@3
-                displayName: 'Update Version'
-                inputs:
-                  targetType: 'inline'
-                  script: |
-                        echo "Current Version: $(versionNumber)"
-                        npm --no-git-tag-version version $(versionNumber) --allow-same-version
-              - task: PublishBuildArtifacts@1
-                inputs:
-                  PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-                  ArtifactName: 'drop'
-                  publishLocation: 'Container'
-                  StoreAsTar: true
+pool: rupali
+variables:
+  majorVersion: 1
+  minorVersion: $[counter(variables['majorVersion'], 0)]
+  patchVersion: $[counter(format('{0}.{1}', variables['majorVersion'], variables['minorVersion']), 0)]
+  versionNumber: '$(majorVersion).$(minorVersion).$(patchVersion)'
+steps:
+- task: NodeTool@0
+  displayName: 'install node'
+  inputs:
+    versionSource: 'spec'
+    versionSpec: '10.19.0'
+    checkLatest: true
 
-              - task: Npm@1
-                displayName: 'npm publish'
-                inputs:
-                  command: 'publish'
-                  workingDir: './'
-                  verbose: true
-                  publishRegistry: 'useFeed'
-                  publishFeed: '25fd97b3-0e67-4e99-be8d-ba6285589350/efceda07-3b0f-4f54-afed-1af0255edc55'
-- stage: deploy
-  displayName: building stage
-  pool: 
-   vmImage: ubuntu-latest
-  
-  jobs:
-  - deployment: deploymentJob
-    displayName: Deploy to VM
-    environment: vm.vm1-demo
-   
-    strategy:
-      runOnce:
-          deploy:   
-            steps:
-                - checkout: self
-                
-                - task: NodeTool@0
-                  inputs:
-                    versionSource: 'spec'
-                    versionSpec: '10.19.0'
-                    checkLatest: true
-                - task: DownloadBuildArtifacts@1
-                  inputs:
-                    buildType: 'current'
-                    downloadType: 'single'
-                    artifactName: 'drop'
-                    downloadPath: '$(System.ArtifactsDirectory)'
-                
-                - script: |
+- task: Npm@1
+  displayName: 'install node'
+  inputs:
+    command: 'install'
+    verbose: true
+- task: Bash@3
+  displayName: 'Update Version'
+  inputs:
+    targetType: 'inline'
+    script: |
+          echo "Current Version: $(versionNumber)"
+          npm --no-git-tag-version version $(versionNumber) --allow-same-version
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+    StoreAsTar: true
 
-                   npm pack 
-                   npm start
+- task: Npm@1
+  displayName: 'npm publish'
+  inputs:
+    command: 'publish'
+    workingDir: './'
+    verbose: true
+    publishRegistry: 'useFeed'
+    publishFeed: '25fd97b3-0e67-4e99-be8d-ba6285589350/efceda07-3b0f-4f54-afed-1af0255edc55'
 
