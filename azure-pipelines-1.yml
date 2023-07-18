@@ -35,7 +35,6 @@ stages:
                     specificBuildWithTriggering: true
                     buildVersionToDownload: 'latest'
                     allowPartiallySucceededBuilds: true
-                    tags: '1*'
                     downloadType: 'single'
                     artifactName: 'drop'
                     downloadPath: '$(System.ArtifactsDirectory)'
