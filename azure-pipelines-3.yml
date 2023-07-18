@@ -1,0 +1,53 @@
+trigger:
+- none
+stages:
+- stage: build
+  jobs:
+  - job: run_build
+    pool: rupali
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSource: 'spec'
+        versionSpec: '10.19.0'
+        checkLatest: true
+    - task: Npm@1
+      inputs:
+        command: 'install'
+        workingDir: './'
+
+    - task:
+        scripts: |
+          npm version 1.0.$(Build.BuildId)
+    # - task: PublishBuildArtifacts@1
+    #   inputs:
+    #     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    #     ArtifactName: 'drop'
+    #     publishLocation: 'Container'
+    #     StoreAsTar: true
+    - task: Npm@1
+      inputs:
+        command: 'publish'
+        workingDir: './'
+        verbose: true
+        publishRegistry: 'useFeed'
+        publishFeed: '25fd97b3-0e67-4e99-be8d-ba6285589350/efceda07-3b0f-4f54-afed-1af0255edc55'
+
+- stage: test
+  dependsOn: build
+  jobs:
+  - job: run_test
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - checkout: self
+    - download: current
+      artifact: drop
+    - task: NodeTool@0
+      inputs:
+        versionSource: 'spec'
+        versionSpec: '10.19.0'
+        checkLatest: true
+     - script: |
+        npm pack
+        npm start
