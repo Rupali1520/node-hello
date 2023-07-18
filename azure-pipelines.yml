@@ -13,46 +13,50 @@ stages:
     minorVersion: $[counter(variables['majorVersion'], 0)]
     patchVersion: $[counter(format('{0}.{1}', variables['majorVersion'], variables['minorVersion']), 0)]
     versionNumber: '$(majorVersion).$(minorVersion).$(patchVersion)'
+  pool: rupali
   jobs:
    - deployment: production
      displayName: Production
-     pool: rupali
+     strategy:
+      runOnce:
+          deploy:   
+            steps:
+   
+ 
+              - task: NodeTool@0
+                displayName: 'install node'
+                inputs:
+                  versionSource: 'spec'
+                  versionSpec: '10.19.0'
+                  checkLatest: true
 
-  steps:
-  - task: NodeTool@0
-    displayName: 'install node'
-    inputs:
-      versionSource: 'spec'
-      versionSpec: '10.19.0'
-      checkLatest: true
+              - task: Npm@1
+                displayName: 'install node'
+                inputs:
+                  command: 'install'
+                  verbose: true
+              - task: Bash@3
+                displayName: 'Update Version'
+                inputs:
+                  targetType: 'inline'
+                  script: |
+                        echo "Current Version: $(versionNumber)"
+                        npm --no-git-tag-version version $(versionNumber) --allow-same-version
+              - task: PublishBuildArtifacts@1
+                inputs:
+                  PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+                  ArtifactName: 'drop'
+                  publishLocation: 'Container'
+                  StoreAsTar: true
 
-  - task: Npm@1
-    displayName: 'install node'
-    inputs:
-      command: 'install'
-      verbose: true
-  - task: Bash@3
-    displayName: 'Update Version'
-    inputs:
-      targetType: 'inline'
-      script: |
-            echo "Current Version: $(versionNumber)"
-            npm --no-git-tag-version version $(versionNumber) --allow-same-version
-  - task: PublishBuildArtifacts@1
-    inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: 'drop'
-      publishLocation: 'Container'
-      StoreAsTar: true
-
-  - task: Npm@1
-    displayName: 'npm publish'
-    inputs:
-      command: 'publish'
-      workingDir: './'
-      verbose: true
-      publishRegistry: 'useFeed'
-      publishFeed: '25fd97b3-0e67-4e99-be8d-ba6285589350/efceda07-3b0f-4f54-afed-1af0255edc55'
+              - task: Npm@1
+                displayName: 'npm publish'
+                inputs:
+                  command: 'publish'
+                  workingDir: './'
+                  verbose: true
+                  publishRegistry: 'useFeed'
+                  publishFeed: '25fd97b3-0e67-4e99-be8d-ba6285589350/efceda07-3b0f-4f54-afed-1af0255edc55'
 - stage: deploy
   displayName: building stage
   pool: 
