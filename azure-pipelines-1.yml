@@ -27,31 +27,30 @@ stages:
                     versionSource: 'spec'
                     versionSpec: '10.19.0'
                     checkLatest: true
-                - download: current
-                  artifact: drop
-                # - task: DownloadBuildArtifacts@1
-                #   inputs:
-                #     buildType: 'specific'
-                #     project: '25fd97b3-0e67-4e99-be8d-ba6285589350'
-                #     pipeline: '3'
-                #     specificBuildWithTriggering: true
-                #     buildVersionToDownload: 'latest'
-                #     allowPartiallySucceededBuilds: true
-                #     downloadType: 'single'
-                #     artifactName: 'drop'
-                #     downloadPath: '$(System.ArtifactsDirectory)'
-                                # - task: DownloadBuildArtifacts@1
-                #   inputs:
-                #     buildType: 'specific'
-                #     project: '25fd97b3-0e67-4e99-be8d-ba6285589350'
-                #     pipeline: '3'
-                #     specificBuildWithTriggering: true
-                #     buildVersionToDownload: 'latest'
-                #     downloadType: 'single'
-                #     artifactName: 'drop'
-                #     downloadPath: '$(System.ArtifactsDirectory)'
-                #     checkDownloadedFiles: true
-                #     extractTars: true
+              
+                - task: DownloadBuildArtifacts@1
+                  inputs:
+                    buildType: 'specific'
+                    project: '25fd97b3-0e67-4e99-be8d-ba6285589350'
+                    pipeline: '3'
+                    specificBuildWithTriggering: true
+                    buildVersionToDownload: 'latest'
+                    allowPartiallySucceededBuilds: true
+                    downloadType: 'single'
+                    artifactName: 'drop'
+                    downloadPath: '$(System.ArtifactsDirectory)'
+                - task: DownloadBuildArtifacts@1
+                  inputs:
+                    buildType: 'specific'
+                    project: '25fd97b3-0e67-4e99-be8d-ba6285589350'
+                    pipeline: '3'
+                    specificBuildWithTriggering: true
+                    buildVersionToDownload: 'latest'
+                    downloadType: 'single'
+                    artifactName: 'drop'
+                    downloadPath: '$(System.ArtifactsDirectory)'
+                    checkDownloadedFiles: true
+                    extractTars: true
                 - script: |
                    npm pack 
                    npm start
