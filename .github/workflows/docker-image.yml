@@ -1,0 +1,24 @@
+
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "devlopment" ]
+
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: azure/docker-login@v1
+      with:
+          login-server: yourACRname.azurecr.io
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+    - run: |
+          docker build -t ${{secrets.ENDPOINT}}/appdb:${{ github.sha }} .
+          docker push ${{secrets.ENDPOINT}}/appdb:${{ github.sha }}
