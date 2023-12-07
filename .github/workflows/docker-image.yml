@@ -9,8 +9,7 @@ on:
 jobs:
 
   build:
-    env:
-        DOCKERTAG: ${{ github.sha | slice(0, 5) }}
+
     runs-on: ubuntu-latest
 
     steps:
@@ -23,7 +22,14 @@ jobs:
           login-server: yourACRname.azurecr.io
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
+    - name: Extract first 5 characters of SHA
+      run: |
+        SHA_SHORT=$(echo "${{ github.sha }}" | cut -c 1-5)
+        echo "SHA_SHORT=${SHA_SHORT}" >> $GITHUB_ENV
   
-    - run: |
-          docker build -t ${{secrets.ENDPOINT}}/trailuse:${{ env.DOCKERTAG }} .
-          docker push ${{secrets.ENDPOINT}}/trailuse:${{ env.DOCKERTAG }}
+    - name: Build and push Docker image
+      env:
+        DOCKERTAG: ${{ env.SHA_SHORT }}
+      run: |
+        docker build -t ${{ secrets.ENDPOINT }}/trailuse:${DOCKERTAG} .
+        docker push ${{ secrets.ENDPOINT }}/trailuse:${DOCKERTAG}
