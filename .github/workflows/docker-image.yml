@@ -22,6 +22,8 @@ jobs:
           login-server: yourACRname.azurecr.io
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
+    
     - run: |
-          docker build -t ${{secrets.ENDPOINT}}/trailuse:${{ github.sha }} .
-          docker push ${{secrets.ENDPOINT}}/trailuse:${{ github.sha }}
+          dockertag=$(echo ${{ github.sha }} | cut -c 1-5)
+          docker build -t ${{secrets.ENDPOINT}}/trailuse:${{ dockertag }} .
+          docker push ${{secrets.ENDPOINT}}/trailuse:${{ dockertag }}
