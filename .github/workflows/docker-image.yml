@@ -20,5 +20,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
     - run: |
-          docker build -t ${{secrets.ENDPOINT}}/appdb:${{ github.sha }} .
-          docker push ${{secrets.ENDPOINT}}/appdb:${{ github.sha }}
+          docker build -t ${{secrets.ENDPOINT}}/trailuse:${{ github.sha }} .
+          docker push ${{secrets.ENDPOINT}}/trailuse:${{ github.sha }}
