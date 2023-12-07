@@ -19,7 +19,7 @@ jobs:
 
     - uses: azure/docker-login@v1
       with:
-          login-server: yourACRname.azurecr.io
+          login-server: ${{secrets.ENDPOINT}}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
     - name: Extract first 5 characters of SHA
