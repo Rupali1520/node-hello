@@ -9,7 +9,8 @@ on:
 jobs:
 
   build:
-
+    env:
+        DOCKERTAG: ${{ github.sha | slice(0, 5) }}
     runs-on: ubuntu-latest
 
     steps:
@@ -22,8 +23,8 @@ jobs:
           login-server: yourACRname.azurecr.io
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
-    
+  
     - run: |
           dockertag=$(echo ${{ github.sha }} | cut -c 1-5)
-          docker build -t ${{secrets.ENDPOINT}}/trailuse:${{ dockertag }} .
-          docker push ${{secrets.ENDPOINT}}/trailuse:${{ dockertag }}
+          docker build -t ${{secrets.ENDPOINT}}/trailuse:${{ env.DOCKERTAG }} .
+          docker push ${{secrets.ENDPOINT}}/trailuse:${{ env.DOCKERTAG }}
